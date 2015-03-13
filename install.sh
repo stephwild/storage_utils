@@ -18,6 +18,8 @@ if [ $1 = '--clean' ]; then
 
     rmdir --verbose $SCRIPT_DIR
     rmdir --verbose $FUNCTION_DIR
+
+    exit 0
 fi
 
 if [ ! -d $FUNCTION_DIR ]; then
