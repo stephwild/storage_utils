@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 FUNCTION_DIR=~/.script_function
 SCRIPT_DIR=~/.my_script
@@ -8,7 +8,7 @@ echo "    Clean storage script and function"
 echo "-----------------------------------------"
 echo
 
-if [ $1 = '--clean' ]; then
+if [ "$1" = '--clean' ]; then
     rm --verbose $SCRIPT_DIR/add_repo.sh
     rm --verbose $SCRIPT_DIR/add_storage.sh
     rm --verbose $SCRIPT_DIR/install_storage.sh
