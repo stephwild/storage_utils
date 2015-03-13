@@ -55,7 +55,7 @@ if [ ! -d $2 ]; then
 fi
 
 if ! key_exist $1; then
-    echo "$1 - $2" >> ~/.storage_repo
+    echo "$1 - $(realpath $2)" >> ~/.storage_repo
 else
     echo -e "\033[1;31mError:\033[0m $1 repo already exist"
     exit 1
