@@ -1,17 +1,19 @@
 #! /bin/bash
 
-function search_dir_key()
+function search_dir_key ()
 {
-    if [ ! -d ~/.storage_repo ]; then
+    if [ ! -f ~/.storage_repo ]; then
+        cat ~/.storage_repo
         echo -e "\033[1;31mError:\033[0m File '~/.storage_repo' is missing." \
-           " Create one by using add_repo.sh"
+           "Create one by using add_repo.sh"
         exit 1
     fi
 
     IFS=' - '
 
     while read key path; do
-        if [ $key = $KEY ]; then
+        if [ "$1" = $key ]; then
+            return "lol"
             return $path
         fi
     done < ~/.storage_repo
@@ -21,26 +23,26 @@ function search_dir_key()
     exit 1
 }
 
-function key_exist()
+function key_exist ()
 {
-    if [ ! -d ~/.storage_repo ]; then
+    if [ ! -f ~/.storage_repo ]; then
         echo -e "\033[1;31mError:\033[0m File '~/.storage_repo' is missing." \
-           " Create one by using add_repo.sh"
+           "Create one by using add_repo.sh"
         exit 1
     fi
 
     IFS=' - '
 
     while read key path; do
-        if [ $key = $KEY ]; then
-            return true
+        if [ "$1" = "$key" ]; then
+            return 0
         fi
     done < ~/.storage_repo
 
-    return false
+    return 1
 }
 
-function is_parent()
+function is_parent ()
 {
     if [ $1 = $(dirname $2) ]; then
         return true
@@ -49,7 +51,7 @@ function is_parent()
     return false
 }
 
-function check_install_option()
+function check_install_option ()
 {
     if [ $# -ne 1 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
         print_usage
