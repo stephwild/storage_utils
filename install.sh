@@ -3,6 +3,24 @@
 FUNCTION_DIR=~/.script_function
 SCRIPT_DIR=~/.my_script
 
+echo
+echo "-----------------------------------------"
+echo "    Clean storage script and function"
+echo "-----------------------------------------"
+echo
+
+if [ $1 = '--clean' ]; then
+    rm --verbose $SCRIPT_DIR/add_repo.sh
+    rm --verbose $SCRIPT_DIR/add_storage.sh
+    rm --verbose $SCRIPT_DIR/install_storage.sh
+
+    rm --verbose $FUNCTION_DIR/main_storage_function.sh
+    rm --verbose $FUNCTION_DIR/backup_storage_function.sh
+
+    rmdir --verbose $SCRIPT_DIR
+    rmdir --verbose $FUNCTION_DIR
+fi
+
 if [ ! -d $FUNCTION_DIR ]; then
     mkdir $FUNCTION_DIR
 fi
