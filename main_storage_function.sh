@@ -13,13 +13,13 @@ function search_dir_key ()
 
     while read key path; do
         if [ "$1" = $key ]; then
-            return "lol"
-            return $path
+            SEARCH_DIR_KEY="$path"
+            return 0
         fi
     done < ~/.storage_repo
 
-    echo "The key $KEY does not exist."
-    echo "Add it with add_repo.sh $KEY <name_dir> <storage_dir>"
+    echo "The key $1 does not exist."
+    echo "Add it with add_repo.sh $1 <name_dir> <storage_dir>"
     exit 1
 }
 

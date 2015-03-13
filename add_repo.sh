@@ -29,12 +29,12 @@ source $FUNCTION_DIR/main_storage_function.sh
 
 if [ "$1" = '--delete' ]; then
     search_dir_key $2
-    DIR_KEY=$?
+    DIR_KEY=$SEARCH_DIR_KEY
 
     sed -i "/^$2 -/d" ~/.storage_repo
-    echo "Key $2 removed from ~/.storage_repo"
+    echo "Key '$2' removed from ~/.storage_repo"
 
-    echo -ne "Do you want to delete too '$DIR_KEY' ?\nRespond with y/n or yes/no: "
+    echo -ne "Do you want to delete too $DIR_KEY ?\nRespond with y/n or yes/no: "
     read response
 
     while true; do
@@ -53,18 +53,19 @@ fi
 # Add a repo
 # ----------
 
-# $1 = KEY, $2 = KEY_DIR
-if [ ! -d "$2" ]; then
-    echo Creating $2 directory
-    mkdir $2 || exit 1
-fi
-
 touch ~/.storage_repo
 
+# $1 = KEY, $2 = KEY_DIR
 if ! key_exist $1; then
-    echo "Add $1 repo in $2"
+
+    if [ ! -d "$2" ]; then
+        echo "Creating '$2' directory"
+        mkdir $2 || exit 1
+    fi
+
+    echo "Add '$1' repo in '$2' [KEY='$1', KEY_DIR='$2']"
     echo "$1 - $(realpath $2)" >> ~/.storage_repo
 else
-    echo -e "\033[1;31mError:\033[0m $1 repo already exist"
+    echo -e "\033[1;31mError:\033[0m '$1' repo already exist"
     exit 1
 fi
