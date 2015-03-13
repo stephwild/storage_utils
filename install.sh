@@ -3,7 +3,6 @@
 FUNCTION_DIR=~/.script_function
 SCRIPT_DIR=~/.my_script
 
-echo
 echo "-----------------------------------------"
 echo "    Clean storage script and function"
 echo "-----------------------------------------"
