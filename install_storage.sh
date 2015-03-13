@@ -2,89 +2,79 @@
 
 # Set DEBUG var to '-v' to debug this script
 DEBUG=""
-KEY=$(eval echo \$$1)
+KEY=$(eval echo \$$2)
 
-source ~/.script_functions/storage_check.sh
+REPO_DIR=$(search_dir_key $KEY)
 
-STORAGE_BACKUP=$(head -n 1 ~/.storage_repo)
-DIRECTORY_BACKUP=$(search_dir_key $KEY)
+# REPO_DIR need to have at least the STORAGE_DIR value for his first line
+if [ ! -d $REPO_DIR/.storage_data/${KEY}.data ]; then
+    echo "\033[1;31mError:\033[0m ${KEY}.data is missing"
+    exit 1
+fi
+
+STORAGE_BACKUP=$(head -n 1 $REPO_DIR/.storage_data/${KEY}.data)
+
+FUNCTION_DIR=~/.function_script
 
 function print_usage ()
 {
-    echo -e "Usage:\t$0 OPTION\n\nOPTION\n------\n"
+    echo -e "Usage:\t$0 OPTION KEY\n\n"
 
+    echo -e "Backup or update KEY repo."
+    echo -e "Warning: KEY repo must be add with add_repo.sh\n\n"
+
+    echo -e "OPTION\n------\n"
     echo -e "-u | --update :\n\tUpdate your storage repo with Dropbox"
     echo -e "-b | --backup :\n\tBackup your storage repo to Dropbox"
     echo -e "-h | --help : \n\tPrint this usage"
-
-    exit 1
 }
 
-SCRIPT_DIR=~/.pretty_script
-
-if [ ! -f $SCRIPT_DIR/backup_function.sh ] || [ ! -f $SCRIPT_DIR/dropbox_option.sh ]; then
-     echo -e "\033[1;31mError:\033[0m Main script \"backup_function.sh\" or/and" \
-     "\"dropbox_option.sh\" is missing... Put them in \"$SCRIPT_DIR\" directory."
+if [ ! -f $FUNCTION_DIR/backup_storage_function.sh ] ||
+    [ ! -f $FUNCTION_DIR/main_storage_function.sh ]; then
+     echo -e "\033[1;31mError:\033[0m Main script \"backup_storage_function.sh\" or/and" \
+     "\"main_storage_function.sh\" is missing... Put them in \"$FUNCTION_DIR\" directory."
      exit 1
 fi
 
-source $SCRIPT_DIR/dropbox_option.sh
-source $SCRIPT_DIR/backup_function.sh
+source $FUNCTION_DIR/main_storage_function.sh
+source $FUNCTION_DIR/backup_storage_function.sh
 
-option_check_out $@
+check_install_option $@
 
 if [ ! -f $SOURCE_DIR/.storage_data/${KEY}.data ]; then
-    echo -e "\033[1;31mError:\033[0m documentation data files are missing.\n\nYou" \
-    "need to configure a \"documentation.data\" file in" \
-    "\"$SOURCE_DIR/.script_data\" to use this script. This file will be used" \
-    "to know wich files will be backed up or updated.\nIt must contain the" \
-    "environment variables used in \"install_documentation.sh\"."
+    echo -e "\033[1;31mError:\033[0m Data config file is missing.\n\nYou" \
+    "need to add data files with add_storage.sh script in order to use this script"
     exit 1
 fi
 
-source $SOURCE_DIR/.storage_data/${KEY}.data
+#############################
+#    Backup/Update files    #
+#############################
+
+# Backup data files
+# -----------------
 
 IFS=' - '
+FILES_DIR=""
 
-while read directory filename is_updated; do
-    FILES_DIR+=' filename'
+while read directory filename; do
+    FILES_DIR+="filename "
 
     if [ $OLD_DIR != $directory ]; then
-        create_dir $directory "="
+        if is_parent $OLD_DIR $directory; then
+            create_dir $directory "="
+        else
+            create_dir $directory "#"
+        fi
+
         add_file_dir $directory $FILES_DIR
         OLD_DIR=$directory
     fi
-done
+done < $SOURCE_DIR/.storage_data/${KEY}.data
 
-create_dir $DEST_DIR "#"
-add_file_dir "" "vocabulary" "TODO"
+# Backup config files of the repo
+# -------------------------------
 
-create_dir "$DEST_DIR/coding" "="
-add_file_dir "coding" $CODING
-
-create_dir "$DEST_DIR/electronic" "="
-add_file_dir "electronic" $ELECTRONIC
-
-create_dir "$DEST_DIR/encryption" "="
-add_file_dir "encryption" $ENCRYPTION
-
-create_dir "$DEST_DIR/file_format" "="
-add_file_dir "file_format" $FILE_FORMAT
-
-create_dir "$DEST_DIR/fun" "="
-add_file_dir "fun" $FUN
-
-create_dir "$DEST_DIR/hacking" "="
-add_file_dir "hacking" $HACKING
-
-create_dir "$DEST_DIR/linux_system" "="
-add_file_dir "linux_system" $LINUX_SYSTEM
-
-create_dir "$DEST_DIR/network" "="
-add_file_dir "network" $NETWORK
-
-create_dir "$DEST_DIR/unsorted" "="
-add_file_dir "unsorted" $UNSORTED
-
-create_dir "$DEST_DIR/.script_data" "="
-add_file_dir ".script_data" "documentation.data"
+create_dir .storage_data "-"
+cp -uv $SOURCE_DIR/.storage_data/${KEY}.data $DEST_DIR/.storage_data
+cp -uv $SOURCE_DIR/.storage_data/${KEY}.log $DEST_DIR/.storage_data

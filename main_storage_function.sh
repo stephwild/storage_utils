@@ -2,6 +2,12 @@
 
 function search_dir_key()
 {
+    if [ ! -d ~/.storage_repo ]; then
+        echo -e "\033[1;31mError:\033[0m File '~/.storage_repo' is missing." \
+           " Create one by using add_repo.sh"
+        exit 1
+    fi
+
     IFS=' - '
 
     while read key path; do
@@ -10,33 +16,49 @@ function search_dir_key()
         fi
     done < ~/.storage_repo
 
-    echo "The key $KEY does not exist"
+    echo "The key $KEY does not exist."
+    echo "Add it with add_repo.sh $KEY <name_dir> <storage_dir>"
     exit 1
+}
+
+function is_parent()
+{
+    if [ $1 = $(dirname $2) ]; then
+        return true
+    fi
+
+    return false
 }
 
 function check_install_option()
 {
     if [ $# -ne 1 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
         print_usage
+        exit 0
     fi
 
     if [ $1 = "-b" ] || [ $1 = "--backup" ]; then
-        SOURCE_DIR=~/$DIRECTORY_BACKUP
-        DEST_DIR=~/$STORAGE_BACKUP/$(basename $DIRECTORY_BACKUP)
-        echo -e "Backup your $DIRECTORY_BACKUP data in Dropbox directory [$SOURCE_DIR]\n"
+        SOURCE_DIR=~/$REPO_DIR
+        DEST_DIR=~/$STORAGE_BACKUP
+
+        echo -e "Backup $KEY repo to storage directory " \
+            "[$SOURCE_DIR -> $DEST_DIR]\n"
     elif [ $1 = "-u" ] || [ $1 = "--update" ]; then
-        SOURCE_DIR=~/$STORAGE_BACKUP/$(basename $DIRECTORY_BACKUP)
-        DEST_DIR=~/$DIRECTORY_BACKUP
-        echo -e "Update your $DIRECTORY_BACKUP data in $DIRECTORY_BACKUP directory [$SOURCE_DIR]\n"
+        SOURCE_DIR=~/$STORAGE_BACKUP
+        DEST_DIR=~/$REPO_DIR
+
+        echo -e "Update $KEY repo by storage directory " \
+           "[ $SOURCE_DIR -> $DEST_DIR ]\n"
     else
         echo -e "\033[1;31mError:\033[0m Bad option \"$1\" used\n"
         print_usage
+        exit 1
     fi
 
     if [ ! -d $SOURCE_DIR ]; then
-        echo -e "\033[1;31mError:\033[0m $DIRECTORY_BACKUP directory [$SOURCE_DIR] is" \
-            "missing.\n\nYou have probably mix up --backup and --update options" \
-            "...\n\nSee usage with --help option"
+        echo -e "\033[1;31mError:\033[0m $SOURCE_DIR directory is" \
+            "missing.\n\nYou have probably mix up --backup and --update" \
+            " options...\n\nSee usage with --help option"
         exit 1
     fi
 }
