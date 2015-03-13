@@ -21,6 +21,10 @@ cp -uv ./add_repo.sh $SCRIPT_DIR
 cp -uv ./add_storage.sh $SCRIPT_DIR
 cp -uv ./install_storage.sh $SCRIPT_DIR
 
+chmod u+x $SCRIPT_DIR/add_repo.sh
+chmod u+x $SCRIPT_DIR/add_storage.sh
+chmod u+x $SCRIPT_DIR/install_storage.sh
+
 echo
 echo "---------------------------"
 echo "    Add script function"
