@@ -10,18 +10,28 @@ if [ $# -ne 2 ]; then
     print_usage;
 fi
 
-if [ ! -d ~/.storage_repo ]; then
-    echo "Use '--create' option to build ~/.storage_repo (repo location go in
-    this directory."
+if [ $1 = '--delete' ]; then
+    DIR_KEY=$(search_dir_key $2)
+
+    echo "Do you want recursively delete $DIR_KEY.\nRespond with y/n or yes/no: "
+    read response
+
+    while 1; do
+        if [ $response = 'y' ] || [ $response = 'yes' ]; then
+            rm -rf $DIR_KEY
+            exit 0
+        elif [ $response = 'n' ] || [ $response = 'no' ]; then
+            exit 0
+        else
+            echo "Expect y/n or yes/no"
+            read response
+        fi
+    done
 fi
 
-if [ $1 = '--create' ]; then
-    if [ ! -d $2 ]; then
-        echo "$2 is not a directory or does not exist"
-        exit 1
-    fi
-
-    echo $2 > ~/.storage_repo
+if [ ! -d $1 ]; then
+    echo Creating $1 directory
+    mkdir $1 || exit 1
 fi
 
 if [ ! -d $2 ]; then
