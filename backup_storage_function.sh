@@ -7,15 +7,14 @@ function create_dir ()
     if [ ! -d $1 ]; then
         DIR_LENGTH=${#1}
 
-        echo -e "Create \"$1\" directory"
+        echo "Create \"$1\" directory"
 
         # Here the underline
         for i in `seq 1 $(($DIR_LENGTH + 19))`; do
             echo -n $2
         done
 
-        echo -e "\n"
-
+        echo
         mkdir $1
     fi
 }
@@ -30,10 +29,10 @@ function add_file_dir ()
         FILE=$(eval echo \${$i})
 
         if [ ! -f "$DEST_DIR/$1/$FILE" ]; then
-            echo -e "Add $FILE file in $DEST_DIR/$1"
+            echo "Add $FILE file in $DEST_DIR/$1"
             IS_UPDATE=1
         elif [ "$SOURCE_DIR/$1/$FILE" -nt "$DEST_DIR/$1/$FILE" ]; then
-            echo -e "Update $FILE file in $DEST_DIR/$1"
+            echo "Update $FILE file in $DEST_DIR/$1"
             IS_UPDATE=1
         fi
 
@@ -41,7 +40,7 @@ function add_file_dir ()
     done
 
     if [ $IS_UPDATE -eq 0 ]; then
-        echo -e "$1 directory already up-to-date"
+        echo "$1 directory already up-to-date"
     fi
 
     echo
