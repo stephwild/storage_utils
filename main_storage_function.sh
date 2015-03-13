@@ -21,6 +21,25 @@ function search_dir_key()
     exit 1
 }
 
+function key_exist()
+{
+    if [ ! -d ~/.storage_repo ]; then
+        echo -e "\033[1;31mError:\033[0m File '~/.storage_repo' is missing." \
+           " Create one by using add_repo.sh"
+        exit 1
+    fi
+
+    IFS=' - '
+
+    while read key path; do
+        if [ $key = $KEY ]; then
+            return true
+        fi
+    done < ~/.storage_repo
+
+    return false
+}
+
 function is_parent()
 {
     if [ $1 = $(dirname $2) ]; then
