@@ -3,12 +3,13 @@
 FUNCTION_DIR=~/.script_function
 SCRIPT_DIR=~/.my_script
 
-echo "-----------------------------------------"
-echo "    Clean storage script and function"
-echo "-----------------------------------------"
-echo
 
 if [ "$1" = '--clean' ]; then
+    echo "-----------------------------------------"
+    echo "    Clean storage script and function"
+    echo "-----------------------------------------"
+    echo
+
     rm --verbose $SCRIPT_DIR/add_repo.sh
     rm --verbose $SCRIPT_DIR/add_storage.sh
     rm --verbose $SCRIPT_DIR/install_storage.sh
@@ -30,7 +31,6 @@ if [ ! -d $SCRIPT_DIR ]; then
     mkdir $SCRIPT_DIR
 fi
 
-echo
 echo "-----------------------"
 echo "    Add main script"
 echo "-----------------------"
