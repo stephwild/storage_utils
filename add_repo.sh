@@ -7,6 +7,12 @@ function print_usage ()
     echo 'Here print my Help'
 }
 
+function print_error ()
+{
+    echo -e "\033[1;31mError:\033[0m $1"
+    exit 1
+}
+
 if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
     print_usage
     exit 0
@@ -17,9 +23,7 @@ elif [ $1 = '--delete' -a $# -ne 2 ] || [ $1 != '--delete' -a $# -ne 3 ]; then
 fi
 
 if [ ! -f $FUNCTION_DIR/main_storage_function.sh ]; then
-    echo -e "\033[1;31mError:\033[0m You don't have file" \
-    "'main_storage_function.sh' in $FUNCTION_DIR"
-    exit 1
+    print_error "You don't have file 'main_storage_function.sh' in $FUNCTION_DIR"
 fi
 
 source $FUNCTION_DIR/main_storage_function.sh
@@ -50,9 +54,7 @@ if [ "$1" = '--delete' ]; then
     DIR_KEY=$SEARCH_DIR_KEY
 
     if [ ! -f $DIR_KEY/.storage_data/${2}.data ]; then
-        echo "\033[1;31mError:\033[0m Miss '$DIR_KEY/.storage_data/${2}.data'" \
-        "file"
-        exit 1
+        print_error "Miss '$DIR_KEY/.storage_data/${2}.data' file"
     fi
 
     sed -i "/^$2 -/d" ~/.storage_repo
@@ -95,6 +97,5 @@ if ! key_exist $1; then
     echo "Add '$1' repo in '$2' [KEY='$1', KEY_DIR='$2', STORAGE_DIR='$3']"
     echo "$1 - $(realpath $2)" >> ~/.storage_repo
 else
-    echo -e "\033[1;31mError:\033[0m '$1' repo already exist"
-    exit 1
+    print_error "'$1' repo already exist"
 fi
