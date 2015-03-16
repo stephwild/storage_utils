@@ -73,22 +73,31 @@ OLD_DIR=$(sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data | head -n 1 \
     | cut -d '-' -f 1)
 
 FILES_DIR=""
+DIR_CREATED=1
+FILE_CONTENT=$(sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data)
 
-sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data | while read directory filename
-do
-    FILES_DIR+="$filename "
-
+while read directory filename; do
     if [ $OLD_DIR != $directory ]; then
-        if is_parent $OLD_DIR $directory; then
+        add_file_dir $OLD_DIR $FILES_DIR
+        FILES_DIR=""
+        DIR_CREATED=1
+    fi
+
+    if [ $DIR_CREATED -eq 1 ]; then
+        if is_parent $OLD_DIR $directory &&  [ $OLD_DIR != '/' ]; then
             create_dir $directory "="
         else
             create_dir $directory "#"
         fi
 
-        add_file_dir $directory $FILES_DIR
         OLD_DIR=$directory
+        DIR_CREATED=0
     fi
-done
+
+    FILES_DIR+="$filename "
+done <<< "$FILE_CONTENT"
+
+add_file_dir $OLD_DIR $FILES_DIR
 
 IFS=$OLD_IFS
 

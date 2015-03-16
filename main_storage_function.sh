@@ -22,8 +22,8 @@ function search_dir_key ()
 
     IFS=$OLD_IFS
 
-    echo "The key $1 does not exist."
-    echo "Add it with add_repo.sh $1 <name_dir> <storage_dir>"
+    echo "The key '$1' does not exist."
+    echo "Add it with add_repo.sh '$1' <name_dir> <storage_dir>"
     exit 1
 }
 
