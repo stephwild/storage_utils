@@ -65,11 +65,11 @@ function add_file_dir()
 
         if [ $MOVE -eq 1 ]; then
             mv $i ${DIR_KEY}$FILE_REL_PATH
-            echo "Move $filename_i in $FILE_REL_PATH" | tee > $DIR_KEY/.storage_data/${KEY}.log
         else
             cp $i ${DIR_KEY}$FILE_REL_PATH
-            echo "Copy $filename_i in $FILE_REL_PATH" | tee > $DIR_KEY/.storage_data/${KEY}.log
         fi
+
+        echo "Add $filename_i in $FILE_REL_PATH" | tee >> $DIR_KEY/.storage_data/${KEY}.log
     done
 }
 
@@ -101,10 +101,11 @@ fi
 search_dir_key $KEY
 DIR_KEY=$SEARCH_DIR_KEY
 
-if [ ! -f $DIR_KEY/.storage_data/${KEY}.data ]; then
-    print_error "File '$DIR_KEY/.storage_data/${KEY}.data' does not exist"
+if [ ! -f $DIR_KEY/.storage_data/${KEY}.storage ]; then
+    echo "Warning: File '$DIR_KEY/.storage_data/${KEY}.storage' does not exist"
 fi
 
+create_if_missing_dir $DIR_KEY/.storage_data
 create_if_missing_dir $DEST_DIR
 
 # Get env var $REL_PATH: destination dir of the file relative to $DIR_KEY
@@ -116,5 +117,5 @@ for i in `seq $BEGIN $(($# - 1))`; do
     add_file_dir $(eval echo \$$i)
 done
 
-sed '1d' $DIR_KEY/.storage_data/${KEY}.data | sort > $DIR_KEY/.storage_data/.tmp \
-    && mv $DIR_KEY/.storage_data/.tmp $DIR_KEY/.storage_data/${KEY}.data
+sort $DIR_KEY/.storage_data/${KEY}.data > $DIR_KEY/.storage_data/.tmp && \
+    mv $DIR_KEY/.storage_data/.tmp $DIR_KEY/.storage_data/${KEY}.data

@@ -37,26 +37,21 @@ source $FUNCTION_DIR/backup_storage_function.sh
 search_dir_key $KEY
 REPO_DIR=$SEARCH_DIR_KEY
 
-if [ ! -f $REPO_DIR/.storage_data/${KEY}.data ]; then
-    print_error "${KEY}.data is missing in $REPO_DIR/.storage_data.\n\n" \
-        "You need to have at least this file in order to know where is your" \
+if [ ! -f $REPO_DIR/.storage_data/${KEY}.storage ]; then
+    print_error "${KEY}.storage is missing in $REPO_DIR/.storage_data.\n" \
+        "\nYou need to have at least this file in order to know where is your" \
         "'$KEY' storage directory"
 fi
 
-STORAGE_BACKUP=$(head -n 1 $REPO_DIR/.storage_data/${KEY}.data)
+STORAGE_BACKUP=$(head -n 1 $REPO_DIR/.storage_data/${KEY}.storage)
 
-check_install_option "${@:1}"
+check_install_option "$@"
 
 # REPO_DIR need to have at least the STORAGE_DIR value for his first line
 
-if [ ! -f $SOURCE_DIR/.storage_data/${KEY}.data ]; then
-    print_error "Data config file is missing in '$SOURCE_DIR/.storage_data'." \
-        "\n\nYou need to add data files with add_storage.sh script in order" \
-        "to use this script or you need to add one in your storage directory"
-fi
-
-if [ $(wc -l $SOURCE_DIR/.storage_data/${KEY}.data | cut -d ' ' -f 1) -eq 1 ]; then
-    print_error "No data file added\n\nAdd one by using add_storage.sh"
+if [ ! -f $SOURCE_DIR/.storage_data/${KEY}.data -o \
+    $(wc -l $SOURCE_DIR/.storage_data/${KEY}.data | cut -d ' ' -f 1) -eq 0 ]; then
+    print_error "You don't have data file to backup\n\nAdd some by using add_storage.sh"
 fi
 
 #############################
@@ -69,12 +64,10 @@ fi
 OLD_IFS=$IFS
 IFS=$' -\n'
 
-OLD_DIR=$(sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data | head -n 1 \
-    | cut -d '-' -f 1)
+OLD_DIR=$(head -n 1 $SOURCE_DIR/.storage_data/${KEY}.data | cut -d '-' -f 1)
 
 FILES_DIR=""
 DIR_CREATED=1
-FILE_CONTENT=$(sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data)
 
 while read directory filename; do
     if [ $OLD_DIR != $directory ]; then
@@ -95,7 +88,7 @@ while read directory filename; do
     fi
 
     FILES_DIR+="$filename "
-done <<< "$FILE_CONTENT"
+done < $SOURCE_DIR/.storage_data/${KEY}.data
 
 add_file_dir $OLD_DIR $FILES_DIR
 

@@ -91,8 +91,8 @@ if ! key_exist $1; then
         mkdir $2/.storage_data
     fi
 
-    echo "Create initial $2/.storage_data/${1}.data file"
-    echo $(realpath $3) > $2/.storage_data/${1}.data
+    echo "Store storage directory path in $2/.storage_data/${1}.storage file"
+    echo $(realpath $3) > $2/.storage_data/${1}.storage
 
     echo "Add '$1' repo in '$2' [KEY='$1', KEY_DIR='$2', STORAGE_DIR='$3']"
     echo "$1 - $(realpath $2)" >> ~/.storage_repo
