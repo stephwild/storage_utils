@@ -26,16 +26,18 @@ function create_if_missing_dir ()
 function get_relative_path ()
 {
     REMAINING_PATH=$2
-    REL_PATH="/"
+    REL_PATH=""
 
     while [ $1 != $REMAINING_PATH ]; do
         if [ $REMAINING_PATH = '/' ]; then
             print_error "Directory '$2' does not belong to '$KEY' repo"
         fi
 
-        REL_PATH+="$(basename $REMAINING_PATH)/"
+        REL_PATH="$(basename $REMAINING_PATH)/$REL_PATH"
         REMAINING_PATH=$(dirname $REMAINING_PATH)
     done
+
+    REL_PATH="/$REL_PATH"
 }
 
 function add_file_dir()
@@ -114,5 +116,5 @@ for i in `seq $BEGIN $(($# - 1))`; do
     add_file_dir $(eval echo \$$i)
 done
 
-sort $DIR_KEY/.storage_data/${KEY}.data > $DIR_KEY/.storage_data/.tmp \
+sed '1d' $DIR_KEY/.storage_data/${KEY}.data | sort > $DIR_KEY/.storage_data/.tmp \
     && mv $DIR_KEY/.storage_data/.tmp $DIR_KEY/.storage_data/${KEY}.data
