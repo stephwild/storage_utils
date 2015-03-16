@@ -1,50 +1,62 @@
 #! /bin/bash
 
-# Set DEBUG var to '-v' to debug this script
-DEBUG=""
-KEY=$(eval echo \$$2)
-
-REPO_DIR=$(search_dir_key $KEY)
-
-# REPO_DIR need to have at least the STORAGE_DIR value for his first line
-if [ ! -d $REPO_DIR/.storage_data/${KEY}.data ]; then
-    echo "\033[1;31mError:\033[0m ${KEY}.data is missing"
-    exit 1
-fi
-
-STORAGE_BACKUP=$(head -n 1 $REPO_DIR/.storage_data/${KEY}.data)
-
-FUNCTION_DIR=~/.function_script
-
 function print_usage ()
 {
-    echo -e "Usage:\t$0 OPTION KEY\n\n"
+    echo -e "Usage:\t$0 OPTION KEY\n"
 
-    echo -e "Backup or update KEY repo."
-    echo -e "Warning: KEY repo must be add with add_repo.sh\n\n"
+    echo -e "Description: Backup or update KEY repo.\n"
 
     echo -e "OPTION\n------\n"
     echo -e "-u | --update :\n\tUpdate your storage repo with Dropbox"
     echo -e "-b | --backup :\n\tBackup your storage repo to Dropbox"
-    echo -e "-h | --help : \n\tPrint this usage"
+    echo -e "-h | --help : \n\tPrint this usage\n"
+
+    echo -e "Warning: KEY repo must be add with add_repo.sh"
 }
+
+function print_error ()
+{
+    echo -e "\033[1;31mError:\033[0m $@"
+    exit 1
+}
+
+# Set DEBUG var to '-v' to debug this script
+DEBUG=""
+KEY=$2
+FUNCTION_DIR=~/.script_function
 
 if [ ! -f $FUNCTION_DIR/backup_storage_function.sh ] ||
     [ ! -f $FUNCTION_DIR/main_storage_function.sh ]; then
-     echo -e "\033[1;31mError:\033[0m Main script \"backup_storage_function.sh\" or/and" \
-     "\"main_storage_function.sh\" is missing... Put them in \"$FUNCTION_DIR\" directory."
-     exit 1
+        print_error "Main script 'backup_storage_function.sh' or/and" \
+        "'main_storage_function.sh' is missing.\n\nPut them in '$FUNCTION_DIR' directory."
 fi
 
 source $FUNCTION_DIR/main_storage_function.sh
 source $FUNCTION_DIR/backup_storage_function.sh
 
-check_install_option $@
+search_dir_key $KEY
+REPO_DIR=$SEARCH_DIR_KEY
+
+if [ ! -f $REPO_DIR/.storage_data/${KEY}.data ]; then
+    print_error "${KEY}.data is missing in $REPO_DIR/.storage_data.\n\n" \
+        "You need to have at least this file in order to know where is your" \
+        "'$KEY' storage directory"
+fi
+
+STORAGE_BACKUP=$(head -n 1 $REPO_DIR/.storage_data/${KEY}.data)
+
+check_install_option "${@:1}"
+
+# REPO_DIR need to have at least the STORAGE_DIR value for his first line
 
 if [ ! -f $SOURCE_DIR/.storage_data/${KEY}.data ]; then
-    echo -e "\033[1;31mError:\033[0m Data config file is missing.\n\nYou" \
-    "need to add data files with add_storage.sh script in order to use this script"
-    exit 1
+    print_error "Data config file is missing in '$SOURCE_DIR/.storage_data'." \
+        "\n\nYou need to add data files with add_storage.sh script in order" \
+        "to use this script or you need to add one in your storage directory"
+fi
+
+if [ $(wc -l $SOURCE_DIR/.storage_data/${KEY}.data | cut -d ' ' -f 1) -eq 1 ]; then
+    print_error "No data file added\n\nAdd one by using add_storage.sh"
 fi
 
 #############################
@@ -54,11 +66,17 @@ fi
 # Backup data files
 # -----------------
 
-IFS=' - '
+OLD_IFS=$IFS
+IFS=$' -\n'
+
+OLD_DIR=$(sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data | head -n 1 \
+    | cut -d '-' -f 1)
+
 FILES_DIR=""
 
-while read directory filename; do
-    FILES_DIR+="filename "
+sed '1d' $SOURCE_DIR/.storage_data/${KEY}.data | while read directory filename
+do
+    FILES_DIR+="$filename "
 
     if [ $OLD_DIR != $directory ]; then
         if is_parent $OLD_DIR $directory; then
@@ -70,7 +88,9 @@ while read directory filename; do
         add_file_dir $directory $FILES_DIR
         OLD_DIR=$directory
     fi
-done < $SOURCE_DIR/.storage_data/${KEY}.data
+done
+
+IFS=$OLD_IFS
 
 # Backup config files of the repo
 # -------------------------------
