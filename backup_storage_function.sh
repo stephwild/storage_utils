@@ -15,7 +15,7 @@ function create_dir ()
         done
 
         echo
-        mkdir ${DEST_DIR}$1
+        mkdir -p ${DEST_DIR}$1
     fi
 }
 

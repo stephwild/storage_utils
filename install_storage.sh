@@ -95,6 +95,6 @@ IFS=$OLD_IFS
 # Backup config files of the repo
 # -------------------------------
 
-create_dir .storage_data "-"
-cp -uv $SOURCE_DIR/.storage_data/${KEY}.data $DEST_DIR/.storage_data
-cp -uv $SOURCE_DIR/.storage_data/${KEY}.log $DEST_DIR/.storage_data
+create_dir "/.storage_data/" "-"
+cp -uv $SOURCE_DIR/.storage_data/${KEY}.data $DEST_DIR/.storage_data/
+cp -uv $SOURCE_DIR/.storage_data/${KEY}.log $DEST_DIR/.storage_data/
