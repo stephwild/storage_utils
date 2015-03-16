@@ -52,7 +52,7 @@ function add_file_dir()
 
         if [ -d $i ]; then
             OLD_SUB_DIR=$SUB_DIR
-            SUB_DIR="$filename_i/"
+            SUB_DIR="${SUBDIR}$filename_i/"
 
             create_if_missing_dir ${DIR_KEY}${FILE_REL_PATH}$filename_i
             add_file_dir $(for v in `ls $i`; do echo $i/$v; done)
