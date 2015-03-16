@@ -5,7 +5,7 @@
 function create_dir ()
 {
     if [ ! -d ${DEST_DIR}$1 ]; then
-        DIR_LENGTH=$(( ${#DEST_DIR} + ${#1}))
+        DIR_LENGTH=$((9 + ${#1}))
 
         echo "Create \"\$DEST_DIR$1\" directory"
 
@@ -46,7 +46,7 @@ function add_file_dir ()
     done
 
     if [ $IS_UPDATE -eq 0 ]; then
-        echo "$1 directory already up-to-date"
+        echo "\$DEST_DIR$1 directory already up-to-date"
     fi
 
     echo
