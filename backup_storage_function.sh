@@ -4,10 +4,10 @@
 # $2 : underline char
 function create_dir ()
 {
-    if [ ! -d $1 ]; then
-        DIR_LENGTH=${#1}
+    if [ ! -d ${DEST_DIR}$1 ]; then
+        DIR_LENGTH=$(( ${#DEST_DIR} + ${#1}))
 
-        echo "Create \"$1\" directory"
+        echo "Create \"\$DEST_DIR$1\" directory"
 
         # Here the underline
         for i in `seq 1 $(($DIR_LENGTH + 19))`; do
@@ -15,7 +15,7 @@ function create_dir ()
         done
 
         echo
-        mkdir $1
+        mkdir ${DEST_DIR}$1
     fi
 }
 
@@ -28,15 +28,21 @@ function add_file_dir ()
     for i in `seq 2 $#`; do
         FILE=$(eval echo \${$i})
 
-        if [ ! -f "$DEST_DIR/$1/$FILE" ]; then
-            echo "Add $FILE file in $DEST_DIR/$1"
+        if [ ! -f "${SOURCE_DIR}${1}$FILE" ]; then
+            echo "Warning: \$SOURCE_DIR${1}$FILE is missing. You probably" \
+            "remove it without update_storage.sh"
+            continue
+        fi
+
+        if [ ! -f "${DEST_DIR}${1}$FILE" ]; then
+            echo "Add $FILE file in \$DEST_DIR$1"
             IS_UPDATE=1
-        elif [ "$SOURCE_DIR/$1/$FILE" -nt "$DEST_DIR/$1/$FILE" ]; then
-            echo "Update $FILE file in $DEST_DIR/$1"
+        elif [ "${SOURCE_DIR}${1}$FILE" -nt "${DEST_DIR}${1}$FILE" ]; then
+            echo "Update $FILE file in \$DEST_DIR$1"
             IS_UPDATE=1
         fi
 
-        cp -u $DEBUG "$SOURCE_DIR/$1/$FILE" "$DEST_DIR/$1/$FILE"
+        cp -u $DEBUG "${SOURCE_DIR}${1}$FILE" "${DEST_DIR}${1}$FILE"
     done
 
     if [ $IS_UPDATE -eq 0 ]; then

@@ -3,20 +3,24 @@
 function search_dir_key ()
 {
     if [ ! -f ~/.storage_repo ]; then
-        cat ~/.storage_repo
         echo -e "\033[1;31mError:\033[0m File '~/.storage_repo' is missing." \
            "Create one by using add_repo.sh"
         exit 1
     fi
 
+    OLD_IFS=$IFS
     IFS=' - '
 
     while read key path; do
         if [ "$1" = $key ]; then
             SEARCH_DIR_KEY="$path"
+            IFS=$OLD_IFS
+
             return 0
         fi
     done < ~/.storage_repo
+
+    IFS=$OLD_IFS
 
     echo "The key $1 does not exist."
     echo "Add it with add_repo.sh $1 <name_dir> <storage_dir>"
@@ -31,42 +35,49 @@ function key_exist ()
         exit 1
     fi
 
+    OLD_IFS=$IFS
     IFS=' - '
 
     while read key path; do
         if [ "$1" = "$key" ]; then
+            IFS=$OLD_IFS
             return 0
         fi
     done < ~/.storage_repo
 
+    IFS=$OLD_IFS
     return 1
 }
 
 function is_parent ()
 {
     if [ $1 = $(dirname $2) ]; then
-        return true
+        return 0
     fi
 
-    return false
+    return 1
 }
 
 function check_install_option ()
 {
-    if [ $# -ne 1 ] || [ $1 = "-h" ] || [ $1 = "--help" ]; then
+    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
         print_usage
         exit 0
+    elif [ $# -ne 2 ]; then
+        echo -e "\033[1;31mError:\033[0m Bad number of arguments used\n"
+        print_usage
+        exit 1
     fi
 
-    if [ $1 = "-b" ] || [ $1 = "--backup" ]; then
-        SOURCE_DIR=~/$REPO_DIR
-        DEST_DIR=~/$STORAGE_BACKUP
+    if [ "$1" = "-b" ] || [ "$1" = "--backup" ]; then
+        SOURCE_DIR=$REPO_DIR
+        DEST_DIR=$STORAGE_BACKUP
 
         echo -e "Backup $KEY repo to storage directory " \
             "[$SOURCE_DIR -> $DEST_DIR]\n"
-    elif [ $1 = "-u" ] || [ $1 = "--update" ]; then
-        SOURCE_DIR=~/$STORAGE_BACKUP
-        DEST_DIR=~/$REPO_DIR
+    elif [ "$1" = "-u" ] || [ "$1" = "--update" ]; then
+        SOURCE_DIR=$STORAGE_BACKUP
+        DEST_DIR=$REPO_DIR
 
         echo -e "Update $KEY repo by storage directory " \
            "[ $SOURCE_DIR -> $DEST_DIR ]\n"
