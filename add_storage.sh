@@ -69,7 +69,7 @@ function add_file_dir()
             cp $i ${DIR_KEY}$FILE_REL_PATH
         fi
 
-        echo "Add $filename_i in $FILE_REL_PATH" | tee >> $DIR_KEY/.storage_data/${KEY}.log
+        echo "Add '$filename_i' in $FILE_REL_PATH" | tee --append $DIR_KEY/.storage_data/${KEY}.log
     done
 }
 
