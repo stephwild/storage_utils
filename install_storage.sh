@@ -20,10 +20,11 @@ function print_error ()
     exit 1
 }
 
-if [ $1 = '-h' ] || [ $1 = '--help' ]; then
+if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
     print_usage
     exit 0
 elif [ $# -ne 2 ]; then
+    echo -e "\033[1;31mError:\033[0m Bad number of options/arguments\n"
     print_usage
     exit 1
 fi

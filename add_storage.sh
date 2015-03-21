@@ -9,8 +9,6 @@ function print_usage()
     echo -e "OPTION\n------\n"
     echo -e "-m | --move:\n\tMove instead of copy"
     echo -e "-h | --help:\n\tPrint Usage"
-
-    exit 0
 }
 
 function print_error ()
@@ -77,8 +75,13 @@ function add_file_dir()
     done
 }
 
-if [ $# -lt 3 ] || [ $1 = '--help' ] || [ $1 = '-h' ]; then
+if [ "$1" = '--help' ] || [ "$1" = '-h' ]; then
     print_usage
+    exit 0
+elif [ $# -lt 3 ]; then
+    echo -e "\033[1;31mError:\033[0m Bad number of options/arguments\n"
+    print_usage
+    exit 1
 fi
 
 if [ ! -f ~/.storage_repo ]; then
