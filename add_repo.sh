@@ -65,10 +65,15 @@ if [ "$1" = '--delete' ]; then
     sed -i "/^$2 -/d" ~/.storage_repo
     echo "Key '$2' removed from ~/.storage_repo\n"
 
-    STORAGE_DIR=$(head -n 1 $DIR_KEY/.storage_data/${2}.data)
-
-    confirm_delete $DIR_KEY && echo
-    confirm_delete $STORAGE_DIR
+    if [ -f $DIR_KEY/.storage_data/${2}.data ]; then
+        STORAGE_DIR=$(head -n 1 $DIR_KEY/.storage_data/${2}.storage)
+        confirm_delete $DIR_KEY && echo
+        confirm_delete $STORAGE_DIR
+    else
+        confirm_delete $DIR_KEY
+        echo "\nWarning: ${2}.storage not found. You may need to erase storage" \
+        "directory on your own"
+    fi
 
     exit 0
 fi
