@@ -4,7 +4,12 @@ FUNCTION_DIR=~/.script_function
 
 function print_usage ()
 {
-    echo 'Here print my Help'
+    echo -e "Usage:\t$(basename $0) --delete KEY\n\t$(basename $0) [KEY] [DIR_KEY] [STORAGE_DIR]"
+    echo -e "\nDescription\n-----------\n"
+    echo -e "Add a repo. You must have one to store data with other storage_utils scripts\n"
+    echo -e "KEY ->\t\tKey that will relate to your repo"
+    echo -e "DIR_KEY ->\tRepo directory"
+    echo -e "STORAGE_DIR ->\tDirectory where the data will be backup"
 }
 
 function print_error ()
@@ -16,7 +21,7 @@ function print_error ()
 if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
     print_usage
     exit 0
-elif [ $1 = '--delete' -a $# -ne 2 ] || [ $1 != '--delete' -a $# -ne 3 ]; then
+elif [ "$1" = '--delete' -a $# -ne 2 ] || [ "$1" != '--delete' -a $# -ne 3 ]; then
     echo -e "\033[1;31mError:\033[0m Bad option or arguments used\n"
     print_usage;
     exit 1

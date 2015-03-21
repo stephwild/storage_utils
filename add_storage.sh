@@ -1,11 +1,15 @@
 #! /bin/bash
 
 FUNCTION_DIR=~/.script_function
-DEST_DIR=$(realpath $(eval echo \$$#))
 
 function print_usage()
 {
-    echo 'Here print my Help'
+    echo -e "Usage:\t$(basename $0) [OPTION] KEY FILE... DIRECTORY\n"
+    echo -e "Description: Copy FILES to DIRECTORY\n"
+    echo -e "OPTION\n------\n"
+    echo -e "-m | --move:\n\tMove instead of copy"
+    echo -e "-h | --help:\n\tPrint Usage"
+
     exit 0
 }
 
@@ -84,6 +88,8 @@ fi
 if [ ! -f  $FUNCTION_DIR/main_storage_function.sh ]; then
     print_error "File 'main_storage_function' does not exist. Add it in $FUNCTION_DIR"
 fi
+
+DEST_DIR=$(realpath $(eval echo \$$#))
 
 # For search_dir_key function
 source $FUNCTION_DIR/main_storage_function.sh

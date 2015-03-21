@@ -2,7 +2,7 @@
 
 function print_usage ()
 {
-    echo -e "Usage:\t$0 OPTION KEY\n"
+    echo -e "Usage:\t$(basename $0) OPTION KEY\n"
 
     echo -e "Description: Backup or update KEY repo.\n"
 
@@ -19,6 +19,14 @@ function print_error ()
     echo -e "\033[1;31mError:\033[0m $@"
     exit 1
 }
+
+if [ $1 = '-h' ] || [ $1 = '--help' ]; then
+    print_usage
+    exit 0
+elif [ $# -ne 2 ]; then
+    print_usage
+    exit 1
+fi
 
 # Set DEBUG var to '-v' to debug this script
 DEBUG=""
