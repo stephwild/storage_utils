@@ -56,7 +56,7 @@ function add_file_dir()
             OLD_SUB_DIR=$SUB_DIR
             SUB_DIR="${SUBDIR}$filename_i/"
 
-            create_if_missing_dir ${DIR_KEY}${FILE_REL_PATH}$filename_i
+            create_if_missing_dir $i
             add_file_dir $(for v in `ls $i`; do echo $i/$v; done)
 
             SUB_DIR=$OLD_SUB_DIR
@@ -123,7 +123,15 @@ get_relative_path $DIR_KEY $DEST_DIR
 # Loop all files: BEGIN to $# - 1 ($# is the destination directory)
 for i in `seq $BEGIN $(($# - 1))`; do
     SUB_DIR=""
-    add_file_dir $(eval echo \$$i)
+    FILE_LOOKED=$(eval echo \$$i)
+
+    if [ ! -d $FILE_LOOKED ]; then
+        add_file_dir $FILE_LOOKED
+    else
+        for i in $(ls $FILE_LOOKED); do
+            add_file_dir $FILE_LOOKED/$i
+        done
+    fi
 done
 
 sort $DIR_KEY/.storage_data/${KEY}.data > $DIR_KEY/.storage_data/.tmp && \
