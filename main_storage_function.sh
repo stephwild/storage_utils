@@ -9,7 +9,7 @@ function search_dir_key ()
     fi
 
     OLD_IFS=$IFS
-    IFS=' - '
+    IFS=$' \t'
 
     while read key path; do
         if [ "$1" = $key ]; then
@@ -36,7 +36,7 @@ function key_exist ()
     fi
 
     OLD_IFS=$IFS
-    IFS=' - '
+    IFS=$' \t'
 
     while read key path; do
         if [ "$1" = "$key" ]; then
@@ -51,7 +51,7 @@ function key_exist ()
 
 function is_parent ()
 {
-    if [ $1 = $(dirname $2) ]; then
+    if [ "$1" = $(dirname "$2") ]; then
         return 0
     fi
 

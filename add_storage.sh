@@ -63,7 +63,7 @@ function add_file_dir()
             continue
         fi
 
-        echo "$FILE_REL_PATH - $filename_i" >>  $DIR_KEY/.storage_data/${KEY}.data
+        echo -e "$FILE_REL_PATH\t$filename_i" >>  $DIR_KEY/.storage_data/${KEY}.data
 
         if [ $MOVE -eq 1 ]; then
             mv $i ${DIR_KEY}$FILE_REL_PATH

@@ -105,7 +105,7 @@ if ! key_exist $1; then
     echo $(realpath $3) > $2/.storage_data/${1}.storage
 
     echo "Add '$1' repo in '$2' [KEY='$1', KEY_DIR='$2', STORAGE_DIR='$3']"
-    echo "$1 - $(realpath $2)" >> ~/.storage_repo
+    echo -e "$1\t$(realpath $2)" >> ~/.storage_repo
 else
     print_error "'$1' repo already exist"
 fi

@@ -71,22 +71,22 @@ fi
 # -----------------
 
 OLD_IFS=$IFS
-IFS=$' -\n'
+IFS=$' \t\n'
 
-OLD_DIR=$(head -n 1 $SOURCE_DIR/.storage_data/${KEY}.data | cut -d '-' -f 1)
+OLD_DIR=$(head -n 1 $SOURCE_DIR/.storage_data/${KEY}.data | cut -d "	" -f 1)
 
 FILES_DIR=""
 DIR_CREATED=1
 
 while read directory filename; do
-    if [ $OLD_DIR != $directory ]; then
+    if [ "$OLD_DIR" != "$directory" ]; then
         add_file_dir $OLD_DIR $FILES_DIR
         FILES_DIR=""
         DIR_CREATED=1
     fi
 
-    if [ $DIR_CREATED -eq 1 ]; then
-        if is_parent $OLD_DIR $directory &&  [ $OLD_DIR != '/' ]; then
+    if [ "$DIR_CREATED" -eq 1 ]; then
+        if is_parent "$OLD_DIR" "$directory" &&  [ "$OLD_DIR" != '/' ]; then
             create_dir $directory "="
         else
             create_dir $directory "#"
