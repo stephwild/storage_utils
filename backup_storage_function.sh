@@ -34,15 +34,19 @@ function add_file_dir ()
             continue
         fi
 
-        if [ ! -f "${DEST_DIR}${1}$FILE" ]; then
-            echo "Add $FILE file in \$DEST_DIR$1"
-            IS_UPDATE=1
-        elif [ "${SOURCE_DIR}${1}$FILE" -nt "${DEST_DIR}${1}$FILE" ]; then
-            echo "Update $FILE file in \$DEST_DIR$1"
-            IS_UPDATE=1
-        fi
+        diff "${SOURCE_DIR}${1}$FILE" "${DEST_DIR}${1}$FILE" > /dev/null 2>&1
 
-        cp -u $DEBUG "${SOURCE_DIR}${1}$FILE" "${DEST_DIR}${1}$FILE"
+        if [ $(echo $?) -ne 0 ]; then
+            if [ ! -f "${DEST_DIR}${1}$FILE" ]; then
+                echo "Add $FILE file in \$DEST_DIR$1"
+                IS_UPDATE=1
+            elif [ "${SOURCE_DIR}${1}$FILE" -nt "${DEST_DIR}${1}$FILE" ]; then
+                echo "Update $FILE file in \$DEST_DIR$1"
+                IS_UPDATE=1
+            fi
+
+            cp -u $DEBUG "${SOURCE_DIR}${1}$FILE" "${DEST_DIR}${1}$FILE"
+        fi
     done
 
     if [ $IS_UPDATE -eq 0 ]; then
