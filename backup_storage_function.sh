@@ -38,10 +38,10 @@ function add_file_dir ()
 
         if [ $(echo $?) -ne 0 ]; then
             if [ ! -f "${DEST_DIR}${1}$FILE" ]; then
-                echo "Add $FILE file in \$DEST_DIR$1"
+                echo "\033[32;1mAdd $FILE file in \$DEST_DIR$1\033[0m"
                 IS_UPDATE=1
             elif [ "${SOURCE_DIR}${1}$FILE" -nt "${DEST_DIR}${1}$FILE" ]; then
-                echo "Update $FILE file in \$DEST_DIR$1"
+                echo "\033[33mUpdate $FILE file in \$DEST_DIR$1\033[0m"
                 IS_UPDATE=1
             fi
 
@@ -50,7 +50,7 @@ function add_file_dir ()
     done
 
     if [ $IS_UPDATE -eq 0 ]; then
-        echo "\$DEST_DIR$1 directory already up-to-date"
+        echo -e "\033[34;1m\$DEST_DIR$1 directory already up-to-date\033[0m"
     fi
 
     echo

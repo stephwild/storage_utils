@@ -73,14 +73,14 @@ function check_install_option ()
         SOURCE_DIR=$REPO_DIR
         DEST_DIR=$STORAGE_BACKUP
 
-        echo -e "Backup $KEY repo to storage directory " \
-            "[$SOURCE_DIR -> $DEST_DIR]\n"
+        echo -e "\033[1;4mBackup $KEY repo to storage directory\033[0m " \
+            "\033[1m[$SOURCE_DIR -> $DEST_DIR]\n\033[0m"
     elif [ "$1" = "-u" ] || [ "$1" = "--update" ]; then
         SOURCE_DIR=$STORAGE_BACKUP
         DEST_DIR=$REPO_DIR
 
-        echo -e "Update $KEY repo by storage directory " \
-           "[ $SOURCE_DIR -> $DEST_DIR ]\n"
+        echo -e "\033[1;4mUpdate $KEY repo by storage directory\033[0m " \
+           "\033[1m[ $SOURCE_DIR -> $DEST_DIR ]\n\033[0m"
     else
         echo -e "\033[1;31mError:\033[0m Bad option \"$1\" used\n"
         print_usage
