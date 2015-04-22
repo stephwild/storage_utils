@@ -107,5 +107,16 @@ IFS=$OLD_IFS
 # -------------------------------
 
 create_dir "/.storage_data/" "-"
-cp -uv $SOURCE_DIR/.storage_data/${KEY}.data $DEST_DIR/.storage_data/
-cp -uv $SOURCE_DIR/.storage_data/${KEY}.log $DEST_DIR/.storage_data/
+
+# $1 = SOURCE; $2 = DEST
+function add_config {
+    FILE=$(basename $1)
+    cmp -s $1 ${2}$FILE
+
+    if [ $? -eq 0 ]; then
+        cp -uv $1 $2
+    fi
+}
+
+add_config $SOURCE_DIR/.storage_data/${KEY}.data $DEST_DIR/.storage_data/
+add_config $SOURCE_DIR/.storage_data/${KEY}.log $DEST_DIR/.storage_data/
