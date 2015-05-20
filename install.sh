@@ -13,6 +13,8 @@ if [ "$1" = '--clean' ]; then
     rm --verbose $SCRIPT_DIR/add_repo.sh
     rm --verbose $SCRIPT_DIR/add_storage.sh
     rm --verbose $SCRIPT_DIR/install_storage.sh
+    rm --verbose $SCRIPT_DIR/upgrade_storage.sh
+
 
     rm --verbose $FUNCTION_DIR/main_storage_function.sh
     rm --verbose $FUNCTION_DIR/backup_storage_function.sh
@@ -39,10 +41,12 @@ echo
 cp -uv ./add_repo.sh $SCRIPT_DIR
 cp -uv ./add_storage.sh $SCRIPT_DIR
 cp -uv ./install_storage.sh $SCRIPT_DIR
+cp -uv ./upgrade_storage.sh $SCRIPT_DIR
 
 chmod u+x $SCRIPT_DIR/add_repo.sh
 chmod u+x $SCRIPT_DIR/add_storage.sh
 chmod u+x $SCRIPT_DIR/install_storage.sh
+chmod u+x $SCRIPT_DIR/upgrade_storage.sh
 
 echo
 echo "---------------------------"
