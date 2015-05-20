@@ -113,7 +113,7 @@ function add_config {
     FILE=$(basename $1)
     cmp -s $1 ${2}$FILE
 
-    if [ $? -eq 0 ]; then
+    if [ $? -ne 0 ]; then
         cp -uv $1 $2
     fi
 }
